@@ -2,7 +2,18 @@
 <resources>
 
     <string name="app_name">Android Sample Service</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_start_service">Start Service</string>
+    <string name="action_stop_service">Stop Service</string>
+    <string name="action_bind_service">Bind Service</string>
+    <string name="action_unbind_service">UnBind Service</string>
+    <string name="text_status">Status Goes Here</string>
+    <string name="text_integet_value">Integer Value Goes Here</string>
+    <string name="text_string_value">String Value Goes Here</string>
+    <string name="text_increment_by_one">Increment by 1</string>
+    <string name="text_increment_by_10">Increment by 10</string>
+    <string name="text_sample_service">AndroidSampleService</string>
+    <string name="service_started">Service Succesfully Started</string>
+    <string name="service_label">Android Sample Service</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

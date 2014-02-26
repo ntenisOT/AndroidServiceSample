@@ -2,9 +2,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ntenisot.example.androidservicesample.MainActivity" >
-    
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+
+    <item android:id="@+id/action_start_service"
+        android:title="@string/action_start_service"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_stop_service"
+        android:title="@string/action_stop_service"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_bind_service"
+        android:title="@string/action_bind_service"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_unbind_service"
+        android:title="@string/action_unbind_service"
         android:orderInCategory="100"
         app:showAsAction="never" />
 </menu>
