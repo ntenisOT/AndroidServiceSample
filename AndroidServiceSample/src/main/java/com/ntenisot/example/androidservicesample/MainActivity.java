@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -54,8 +55,6 @@ public class MainActivity extends ActionBarActivity {
         btnUpby10.setOnClickListener(btnUpby10Listener);
 
         restoreMe(savedInstanceState);
-
-        CheckIfServiceIsRunning();
     }
 
     @Override
@@ -73,14 +72,6 @@ public class MainActivity extends ActionBarActivity {
             textStrValue.setText(state.getString("textStrValue"));
         }
     }
-
-    private void CheckIfServiceIsRunning() {
-        //If the service is running when the activity starts, we want to automatically bind to it.
-        if (MyService.isRunning()) {
-            doBindService();
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -157,6 +148,7 @@ public class MainActivity extends ActionBarActivity {
                     mService.send(msg);
                 } catch (RemoteException e) {
                     // There is nothing special we need to do if the service has crashed.
+                    Toast.makeText(this, "Unknown Error while doUnbindService", Toast.LENGTH_LONG);
                 }
             }
             // Detach our existing connection.
@@ -225,6 +217,7 @@ public class MainActivity extends ActionBarActivity {
         try {
             doUnbindService();
         } catch (Throwable t) {
+            Toast.makeText(this, "Failed to Unbind", Toast.LENGTH_SHORT).show();
             Log.e("MainActivity", "Failed to unbind from the service", t);
         }
     }

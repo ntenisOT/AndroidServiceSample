@@ -12,6 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.util.Log;
+import android.widget.Toast;
 
 public class MyService extends Service {
 
@@ -35,6 +36,7 @@ public class MyService extends Service {
     }
 
     class IncomingHandler extends Handler { // Handler of incoming messages from clients.
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -42,7 +44,12 @@ public class MyService extends Service {
                     mClients.add(msg.replyTo);
                     break;
                 case MSG_UNREGISTER_CLIENT:
-                    mClients.remove(msg.replyTo);
+                    try {
+                        mClients.remove(msg.replyTo);
+                    }
+                    catch (Exception e) {
+                        Toast.makeText(MyService.this, "Unregister Exception", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case MSG_SET_INT_VALUE:
                     incrementby = msg.arg1;
@@ -52,8 +59,9 @@ public class MyService extends Service {
             }
         }
     }
+
     private void sendMessageToUI(int intvaluetosend) {
-        for (int i=mClients.size()-1; i>=0; i--) {
+        for (int i = mClients.size() - 1; i >= 0; i--) {
             try {
                 // Send data as an Integer
                 mClients.get(i).send(Message.obtain(null, MSG_SET_INT_VALUE, intvaluetosend, 0));
@@ -68,6 +76,8 @@ public class MyService extends Service {
             } catch (RemoteException e) {
                 // The client is dead. Remove it from the list; we are going through the list from back to front so this is safe to do inside the loop.
                 mClients.remove(i);
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -75,13 +85,21 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("MyService", "Service Started.");
-        showNotification();
-        timer.scheduleAtFixedRate(new TimerTask(){ public void run() {onTimerTick();}}, 0, 100L);
+        if (!isRunning) {
+            Log.i("MyService", "Service Started.");
+            Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
+            showNotification();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                public void run() {
+                    onTimerTick();
+                }
+            }, 0, 100L);
+        }
         isRunning = true;
     }
+
     private void showNotification() {
-        nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // In this sample, we'll use the same text for the ticker and the expanded notification
         CharSequence text = getText(R.string.service_started);
         // Set the icon, scrolling text and timestamp
@@ -93,15 +111,17 @@ public class MyService extends Service {
         // Send the notification.
         // We use a layout id because it is a unique number.  We use it later to cancel.
         nm.notify(R.string.service_started, notification);
+        startForeground(123, notification);
+
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("MyService", "Received start id " + startId + ": " + intent);
-        return START_STICKY; // run until explicitly stopped.
+        return START_STICKY;
     }
 
-    public static boolean isRunning()
-    {
+    public static boolean isRunning() {
         return isRunning;
     }
 
@@ -120,8 +140,11 @@ public class MyService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (timer != null) {timer.cancel();}
-        counter=0;
+        Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+        if (timer != null) {
+            timer.cancel();
+        }
+        counter = 0;
         nm.cancel(R.string.service_started); // Cancel the persistent notification.
         Log.i("MyService", "Service Stopped.");
         isRunning = false;
